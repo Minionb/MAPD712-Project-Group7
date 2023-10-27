@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -27,6 +27,30 @@ const AddPatientsPage = () => {
 
     // Function to send data to db
     const saveData = async () => {
+        var missingFields = []
+        if (firstName == ""){
+            missingFields.push("First Name")
+        }
+        if (lastName == ""){
+            missingFields.push("Last Name")
+        }
+        if (gender == ""){
+            missingFields.push("Gender")
+        }
+        if (dateOfBirth == ""){
+            missingFields.push("Date of Birth")
+        }
+        if (address == ""){
+            missingFields.push("Address")
+        }
+        if (department == ""){
+            missingFields.push("Department")
+        }
+        if (doctor == ""){
+            missingFields.push("Doctor")
+        }
+
+        if (missingFields.length == 0){
             try {
               const response = await fetch('http://127.0.0.1:3000/patients', {
                 method: 'POST',
@@ -51,7 +75,20 @@ const AddPatientsPage = () => {
               // Handle any errors that occurred during the API call
               console.error(error);
             }
-        };
+        }
+        else{
+            const missingFieldsString = missingFields.join(', ')
+            Alert.alert(
+                'Missing Fields',
+                'You miss the following fields: '+ missingFieldsString + '. Please enter the required fields to proceed.',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+              );
+        }
+    };
+    
 
   return (
     <View style={styles.container}>
