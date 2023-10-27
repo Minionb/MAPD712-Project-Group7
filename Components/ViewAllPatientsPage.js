@@ -1,11 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import { Feather, Octicons } from "@expo/vector-icons";
+import Card from './card'
 
-const AddPatientsPage = () => {
-  const [search, setSearch] = useState('')
-  const [clicked, setClicked] = useState(false)
+export default function PatientsList(props) {
+  const [search, setSearch] = useState('');
+  const [clicked, setClicked] = useState(false);
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      await fetch('http://127.0.0.1:3000/patients')
+        .then(response => response.json())
+        .then(data => setPatients(data))
+        .catch(error => console.log(error))
+    };
+    fetchPatients();
+  }, []);
+  renderItem = (data) => {
+    return (
+      <TouchableOpacity onPress={() => props.navigation.navigate('PatientDetails', {
+        id: data.item._id
+      })}>
+        <Card>
+          <Text style={styles.text}>{data.item.first_name} {data.item.last_name}</Text>
+          <TouchableOpacity onPress={()=>{}}>
+            <Octicons name="three-bars" size={16} style={{paddingTop: 5}} />
+          </TouchableOpacity>
+        </Card>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -35,13 +61,13 @@ const AddPatientsPage = () => {
           </View>
         </TouchableHighlight>
       </View>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <FlatList
+        data= {patients} 
+        renderItem= {item=> this.renderItem(item)} 
+      />     
     </View>
-  );
+  )
 };
-
-export default AddPatientsPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -67,5 +93,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10,
     width: '80%'
+  },
+  text: {
+    fontSize: 20,
+    flexGrow: 1,
   },
 });
