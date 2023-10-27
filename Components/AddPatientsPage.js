@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const AddPatientsPage = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [additionalNotes, setAdditionalNotes] = useState("")
+    const [additionalNotes, setAdditionalNotes] = useState(" ")
     const [address, setAddress] = useState("")
     const [department, setDepartment] = useState("")
     const [doctor, setDoctor] = useState("")
@@ -71,9 +71,37 @@ const AddPatientsPage = () => {
               const data = await response.json();
               // Process the response data
               console.log(data);
+              var dateOfBirthString = (new Date(data.date_of_birth)).toLocaleDateString();
+
+              Alert.alert(
+                'Successfully Created Patient!',
+                'Information: First Name: '+ data.first_name + ', Last Name: '+ data.last_name + ', Gender: '+ data.gender 
+                + ", Address: " + data.address + ", Date of Birth: " + dateOfBirthString + ", Department: " + data.department
+                + ", Doctor: " + data.doctor + ", Additional Notes: " + data.additional_notes,
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+              );
+              setFirstName("")
+              setLastName("")
+              setGender("")
+              setAdditionalNotes("")
+              setAddress("")
+              setDepartment("")
+              setDoctor("")
+              setDateOfBirth(new Date())
+
             } catch (error) {
               // Handle any errors that occurred during the API call
               console.error(error);
+              Alert.alert(
+                'Server Error! Please contact Support.',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+              );
             }
         }
         else{
