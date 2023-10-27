@@ -1,22 +1,134 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AddPatientsPage = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
+    const [additionalNotes, setAdditionalNotes] = useState("")
+    const [address, setAddress] = useState("")
+    const [department, setDepartment] = useState("")
+    const [doctor, setDoctor] = useState("")
+    const [open, setOpen] = useState(false);
+    const [gender, setGender] = useState("");
+    const [dateOfBirth, setDateOfBirth] = useState(new Date());
+    const today = new Date()
+
+    const [genderItems, setGenderItems] = useState([
+        {label: 'Male', value: 'Male'},
+        {label: 'Female', value: 'Female'}
+      ]);
+
+    const onChange = (event,selectedDate) => {
+        const currentDate = selectedDate;
+        setDateOfBirth(currentDate);
+      };
+
+    // Function to send data to db
+    const saveData = async () => {
+            try {
+              const response = await fetch('http://127.0.0.1:3000/patients', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    gender: gender,
+                    address: address,
+                    date_of_birth: dateOfBirth,
+                    department: department,
+                    doctor: doctor,
+                    additional_notes: additionalNotes,
+                }),
+              });
+              const data = await response.json();
+              // Process the response data
+              console.log(data);
+            } catch (error) {
+              // Handle any errors that occurred during the API call
+              console.error(error);
+            }
+        };
+
   return (
     <View style={styles.container}>
-      <Text>First Name: </Text>
-      <TextInput style={styles.textInput} 
-      onChangeText={text => setFirstName(text)}
-      value={firstName} 
-      />
-
-      <Text>Last Name: </Text>
-      <TextInput style={styles.textInput} 
-      onChangeText={text => setLastName(text)}
-      value={lastName} 
-      />
+        <View style={styles.allignComponents}>
+            <Text style={styles.text}>First Name: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setFirstName(text)}
+            value={firstName} 
+            />
+        </View>
+        <View style={styles.allignComponents}>
+            <Text style={styles.text}>Last Name: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setLastName(text)}
+            value={lastName} 
+            />
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Gender: </Text>
+        <DropDownPicker 
+            open={open}
+            value={gender}
+            items={genderItems}
+            setOpen={setOpen}
+            setValue={setGender}
+            setItems={setGenderItems}
+            placeholder="Select Gender"
+            containerStyle={{height:115,width: 175, }}
+            dropDownStyle={{ backgroundColor: '#fafafa' }}
+        />
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Date of Birth: </Text>
+        <View style={styles.dateContainer}>
+            <DateTimePicker
+            maximumDate= {today}
+            testID="dateTimePicker"
+            value={dateOfBirth}
+            mode= "date"
+            is24Hour={true}
+            onChange={onChange}
+            display="default"
+        />
+        </View>
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Address: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setAddress(text)}
+            value={address} 
+            />
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Department: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setDepartment(text)}
+            value={department} 
+            />
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Doctor: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setDoctor(text)}
+            value={doctor} 
+            />
+        </View>
+        <View style={styles.allignComponents}>
+        <Text style={styles.text}>Additional Notes: </Text>
+            <TextInput style={styles.textInput} 
+            onChangeText={text => setAdditionalNotes(text)}
+            value={additionalNotes} 
+            />
+        </View>
+        <TouchableOpacity style={styles.button}
+            onPress={() => saveData()}>
+            <Text>Summit</Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -33,13 +145,48 @@ const styles = StyleSheet.create({
         borderColor:"black",
         marginBottom: 5,
         color: 'black',
-        width: 100,
+        width: 200,
         height: 30,
         borderWidth: 2,
-        borderRadius: 50,
         backgroundColor: 'white',
+        paddingLeft: 5,
+        marginBottom: 15,
       },
-
+      text:{
+        fontSize: 20,
+        marginBottom: 15,
+        width: 155,
+      },
+      allignComponents: {
+        flexDirection: 'row',
+        marginBottom: 20,
+      },
+      pickerStyle: {
+        flex: 1,
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        color: 'black',
+        paddingRight: 30, 
+      },
+      dateContainer: {
+        width: 200,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      button: {
+        width: 120,
+        height: 45,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 })
 
 export default AddPatientsPage;
