@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import { Feather, Octicons } from "@expo/vector-icons";
+import Card from './card'
 
 const AddPatientsPage = () => {
   const [search, setSearch] = useState('')
@@ -35,8 +36,13 @@ const AddPatientsPage = () => {
           </View>
         </TouchableHighlight>
       </View>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+
+
+      <TouchableOpacity onPress={() => props.navigation.navigate('PatientDetails', {})}>
+        <Card>
+          
+        </Card>
+      </TouchableOpacity>
     </View>
   );
 };
