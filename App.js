@@ -22,7 +22,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="View Patients" component={ViewAllPatientsPage} />
+        <Tab.Screen name="View Patients" component={PatientStack} />
         <Tab.Screen name="Add Patients" component={AddPatientsPage} />
       </Tab.Navigator>
     </NavigationContainer>
