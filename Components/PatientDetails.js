@@ -5,6 +5,7 @@ export default function PatientDetails({route, navigation}) {
     const {id} = route.params;
     const [patientDetails, setPatientDetails] = useState({})
     const [isLoading, setIsLoading] = useState(true);
+    var hasAdditionalNotes = false
 
     useEffect(() => {
         const fetchPatientDetails = async () => {
@@ -23,6 +24,10 @@ export default function PatientDetails({route, navigation}) {
     var dateString = new Date(patientDetails.date_of_birth)
     dateString = dateString.toLocaleDateString();
 
+    if (patientDetails.additional_notes != ""){
+        hasAdditionalNotes = true
+    }
+
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
@@ -37,6 +42,12 @@ export default function PatientDetails({route, navigation}) {
                 <Text style={styles.body}>{patientDetails.department}</Text>
                 <Text style={styles.header}>Doctor: </Text>
                 <Text style={styles.body}>{patientDetails.doctor}</Text>
+                {hasAdditionalNotes &&
+                <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                <Text style={styles.header}>Additional Notes: </Text>
+                <Text style={styles.body}>{patientDetails.additional_notes}</Text>
+                </View>
+                }
             </View>
         </ScrollView>
     )

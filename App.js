@@ -22,8 +22,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="View Patients" component={PatientStack} />
-        <Tab.Screen name="Add Patients" component={AddPatientsPage} />
+        <Tab.Screen name="View Patients" component={PatientStack} options={{unmountOnBlur: true}}/>
+        <Tab.Screen name="Add Patients" component={AddPatientsPage} options={{unmountOnBlur: true}}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
