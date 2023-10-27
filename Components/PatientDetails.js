@@ -20,6 +20,9 @@ export default function PatientDetails({route, navigation}) {
 
     if (isLoading) return (<Text>LOADING</Text>)
 
+    var dateString = new Date(patientDetails.date_of_birth)
+    dateString = dateString.toLocaleDateString();
+
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
@@ -27,7 +30,7 @@ export default function PatientDetails({route, navigation}) {
                 <Text style={styles.header}>Address: </Text>
                 <Text style={styles.body}>{patientDetails.address}</Text>
                 <Text style={styles.header}>Date of Birth: </Text>
-                <Text style={styles.body}>{patientDetails.date_of_birth}</Text>
+                <Text style={styles.body}>{dateString}</Text>
                 <Text style={styles.header}>Gender: </Text>
                 <Text style={styles.body}>{patientDetails.gender}</Text>
                 <Text style={styles.header}>Department: </Text>
