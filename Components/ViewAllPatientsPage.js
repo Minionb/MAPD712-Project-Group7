@@ -62,8 +62,8 @@ export default function PatientsList(props) {
         </TouchableHighlight>
       </View>
       <FlatList
-        data= {patients} 
-        renderItem= {item=> this.renderItem(item)} 
+        data = {patients} 
+        renderItem = {item=> this.renderItem(item)}
       />     
     </View>
   )
@@ -71,7 +71,7 @@ export default function PatientsList(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
+    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
