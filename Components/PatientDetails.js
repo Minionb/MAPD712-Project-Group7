@@ -145,14 +145,14 @@ function ClinicalTestDataScreen() {
                 break;
 
             case 'Heartbeat Rate':
-                var bmp = data.item.reading_value.split(" ")
-                bmp = parseInt(bpm[0])
+                var bpm = data.item.reading_value.split(" ")
+                bpm = parseInt(bpm[0])
 
-                if (48 <= bmp <= 61) condition = 1;
-                else if (62 <= bmp <= 69) condition = 2;
-                else if (70 <= bmp <= 73) condition = 3;
-                else if (74 <= bmp <= 79) condition = 4;
-                else if (80 <= bmp) condition = 5;
+                if (48 <= bpm <= 61) condition = 1;
+                else if (62 <= bpm <= 69) condition = 2;
+                else if (70 <= bpm <= 73) condition = 3;
+                else if (74 <= bpm <= 79) condition = 4;
+                else if (80 <= bpm) condition = 5;
                 break;
             
             default:
@@ -198,7 +198,9 @@ function ClinicalTestDataScreen() {
                                     <MenuOption >
                                         <Text>Edit</Text>
                                     </MenuOption>
-                                    <MenuOption onSelect={ () => createAlert() }>
+                                    <MenuOption onSelect={ () => {
+                                        setRefreshIndicator(false)
+                                        createAlert()} }>
                                         <Text style={{color: 'red'}}>Delete</Text>
                                     </MenuOption>
                                 </MenuOptions>
