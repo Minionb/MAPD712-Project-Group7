@@ -134,7 +134,7 @@ function ClinicalTestDataScreen() {
                 break;
             
             case 'Blood Oxygen Level':
-                var bloodOxygenLevel = data.item.data_value.split(" ")
+                var bloodOxygenLevel = data.item.reading_value.split(" ")
                 bloodOxygenLevel = parseInt(bloodOxygenLevel[0])
 
                 if (95 <= bloodOxygenLevel) condition = 1;
@@ -145,7 +145,7 @@ function ClinicalTestDataScreen() {
                 break;
 
             case 'Heartbeat Rate':
-                var bmp = data.item.data_value.split(" ")
+                var bmp = data.item.reading_value.split(" ")
                 bmp = parseInt(bpm[0])
 
                 if (48 <= bmp <= 61) condition = 1;
