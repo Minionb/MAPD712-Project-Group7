@@ -30,7 +30,7 @@ export default function PatientsList(props) {
 
     return (
       <TouchableOpacity
-        onPress={() => props.navigation.navigate('PatientDetails', {
+        onPress={() => props.navigation.navigate('Patient Details', {
         id: item.item._id
       })}>
         <PatientCard onePatient={item}/>
