@@ -5,6 +5,7 @@ import ClinicalTestDataCard from './clinicalTestDataCard'
 import PatientDeatialsTabScreen from "./patientDetailsTabScreen";
 
 export const PageContext = createContext();
+export const Navigation = createContext();
 
 export default function PatientDetails({route, navigation}) {
     const {id} = route.params;
@@ -32,10 +33,12 @@ export default function PatientDetails({route, navigation}) {
     // Main details screen tab navigator
     return (
         <PageContext.Provider value={[patientDetails, setPatientDetails]}>
-            <Tab.Navigator>
-                <Tab.Screen name="Patient Details" component={DetailsScreen} />
-                <Tab.Screen name="Clinical Test Data" component={ClinicalTestDataScreen} />
-            </Tab.Navigator>
+            <Navigation.Provider value={[navigation]}>
+                <Tab.Navigator>
+                    <Tab.Screen name="Patient Info" component={DetailsScreen} />
+                    <Tab.Screen name="Clinical Test Data" component={ClinicalTestDataScreen} />
+                </Tab.Navigator>
+            </Navigation.Provider>
         </PageContext.Provider>
     )
 }
@@ -52,6 +55,7 @@ function DetailsScreen() {
 function ClinicalTestDataScreen() {
 
     const [patientDetails] = useContext(PageContext)
+    const [nav] = useContext(Navigation)
 
     const [testDataDetails, setTestDataDetails] = useState([])
     const [isLoading, setIsLoading] = useState(true);
@@ -88,15 +92,18 @@ function ClinicalTestDataScreen() {
     }
 
     return (
-            <View style={styles.container}>
-                <Button onPress={() => {handleRefresh()}} title="Refresh"></Button>
-                <FlatList
-                    data = {testDataDetails} 
-                    renderItem = {item=> this.renderItem(item)}
-                    ListEmptyComponent = {<Text>No Clinical Records</Text>}
-                    extraData={refreshIndicator}
-                />
-            </View>
+        <View style={styles.container}>
+            <Button onPress={() => {handleRefresh()}} title="Refresh"></Button>
+            <FlatList
+                data = {testDataDetails} 
+                renderItem = {item=> this.renderItem(item)}
+                ListEmptyComponent = {<Text>No Clinical Records</Text>}
+                extraData={refreshIndicator}
+            />
+            <Button onPress={() => nav.navigate('New Clinical Record',{
+                patientId: patientDetails._id
+            })} title="New Record"></Button>
+        </View>
     )
 }
 
