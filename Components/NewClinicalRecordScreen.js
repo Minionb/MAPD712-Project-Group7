@@ -4,49 +4,99 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function NewClinicalRecord({route, navigation}) {
-    const {patientId} = route.params;
+    const { selectedPatientId, patientName } = route.params;
 
-    // const [dataType, setDataType] = useState('');
-    // const [readingValue, setReadingValue] = useState('');
-    // const [recordDateTime, setRecordDateTime] = useState(new Date());
-    // const [meassurement, setMeassurement] = useState('')
-    // const [open, setOpen] = useState('');
-    // const today = new Date()
+    const [dataType, setDataType] = useState('');
+    const [readingValue, setReadingValue] = useState('');
+    const [recordDateTime, setRecordDateTime] = useState(new Date());
+//    const [meassurement, setMeassurement] = useState('')
+    const [finalValue, setFinalValue] = useState('');
+    const [open, setOpen] = useState('');
+    const [invalidEnrty , setInvalidEntry] = useState('')
+    const today = new Date()
 
-    // const [typeItems, setTypeItems] = useState([
-    //     {label: 'Blood Pressure (X/Y mmHg)', value: 'Blood Pressure'},
-    //     {label: 'Respiratory Rate(X/min)', value: 'Respiratory Rate'},
-    //     {label: 'Blood Oxygen Level (X %)', value: 'Blood Oxygen Level'},
-    //     {label: 'Heartbeat Rate (X bpm)', value: 'Heartbeat Rate'}
-    // ])
+    const [typeItems, setTypeItems] = useState([
+        {label: 'Blood Pressure (X/Y mmHg)', value: 'Blood Pressure'},
+        {label: 'Respiratory Rate(X/min)', value: 'Respiratory Rate'},
+        {label: 'Blood Oxygen Level (X %)', value: 'Blood Oxygen Level'},
+        {label: 'Heartbeat Rate (X bpm)', value: 'Heartbeat Rate'}
+    ])
 
-    // const onChange = (event,selectedDate) => {
-    //     const currentDate = selectedDate;
-    //     setRecordDateTime(currentDate);
-    //     console.log(recordDateTime)
-    // };
+    const onChange = (event,selectedDate) => {
+        const currentDate = selectedDate;
+        setRecordDateTime(currentDate);
+        console.log(recordDateTime)
+    };
 
-    // Delete alert
+    const handleSave = () => {
+        
+        const newRecord = JSON.stringify({patient_id: selectedPatientId, date_time: recordDateTime, data_type: dataType, reading_value: finalValue})
+        console.log(newRecord)
+
+        const addNewRecord = async () => {
+            await fetch('http://127.0.0.1:3000/patients/testdata', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: newRecord
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Record successfully created
+                    console.log('Clinical Record Created Successfully');
+                } 
+                else {
+                    // Error occurred while creating clincial record
+                    console.log('Error creating clinical record');
+                }
+            })
+            .catch(error => {
+                // Error occurred while making the request
+                console.error('Error:', error);
+            });
+        }
+                
+        return addNewRecord();
+    }
+
+    // Save alert and check for empty fields
     const createAlert = () => {
-    //     Alert.alert("Save New Clinical Data", "Are you sure you want to save this as a new data entry?", [
-    //         {
-    //             text: 'Save',
-    //             onPress: () => {
-    //                 console.log("Save Pressed")
-    //                 //deleteClinicalData(id)
-    //             }
-    //         },
-    //         {
-    //             text: 'Cancel',
-    //             onPress: () => console.log("Cancel Pressed")
-    //         }
-    // ]);
-    console.log("pressed")
-}
+
+        // Check if dataType drop down picker is not selected
+        if (dataType == '') {
+            setInvalidEntry('dt')
+            console.log("dataType empty")
+        }
+        // Check if readingValue text field is empty
+        else if (readingValue == '') {
+            setInvalidEntry('rv')
+            console.log("readingvalue empty")
+        }
+        else {
+            Alert.alert("Save New Clinical Data", "Are you sure you want to save this as a new data entry?\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime, [
+                {
+                    text: 'Save',
+                    onPress: () => {
+                        console.log("Save Option Pressed")
+                        handleSave();
+                        navigation.goBack();
+                    }
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log("Cancel Pressed")
+                }
+            ]);
+        }
+        
+        console.log("Save Record pressed")
+    }
 
     return (
         <View style={styles.container}>
-            {/* <Text style={styles.header}>Select Data Type</Text>
+            <Text style={styles.header}>Select Data Type</Text>
+            <Text style={invalidEnrty=='dt'?styles.redText:styles.whiteText}>*Invalid Data Type*</Text>
             <DropDownPicker 
                 open={open}
                 value={dataType}
@@ -54,8 +104,6 @@ export default function NewClinicalRecord({route, navigation}) {
                 setOpen={setOpen}
                 setValue={val => {
                     setDataType(val);
-                    setMeassurement('X/Y mmHg');
-                    console.log(meassurement)
                 }}
                 setItems={setTypeItems}
                 placeholder="None"
@@ -64,11 +112,26 @@ export default function NewClinicalRecord({route, navigation}) {
             />
             
             <Text style={styles.header}>Enter {dataType} Value</Text>
+            <Text style={invalidEnrty=='rv'?styles.redText:styles.whiteText}>*Invalid Value*</Text>
             <View style={styles.rowContainer}>
                 <View style={styles.inputRow}>
                 <TextInput 
                     placeholder={dataType=='Blood Pressure'?"X/Y":"X"}
-                    onChangeText={text => setReadingValue(text)}
+                    onChangeText={text => {
+                        setReadingValue(text)
+                        if (dataType == 'Blood Pressure') {
+                            setFinalValue(text+" mmHg")
+                        }
+                        else if (dataType == 'Respiratory Rate') {
+                            setFinalValue(text+"/min")
+                        }
+                        else if (dataType == 'Blood Oxygen Level') {
+                            setFinalValue(text+" %")
+                        }
+                        else if (dataType == 'Heartbeat Rate') {
+                            setFinalValue(text+" bpm")
+                        }
+                    }}
                     value={readingValue}
                     style={styles.textInput}
                 />
@@ -92,10 +155,12 @@ export default function NewClinicalRecord({route, navigation}) {
                     onChange={onChange}
                     display="default"
                 />
-            </View> */}
+            </View>
             <View style={{ paddingTop: 50 }}>
                 <Button onPress={
-                    createAlert()} title="Save Record"></Button>
+                    () => {
+                        createAlert()
+                    }} title="Save Record"></Button>
             </View>
             
         </View>
@@ -143,4 +208,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 25,
     },
+    whiteText: {
+        color: 'white'
+    },
+    redText: {
+        color: 'red'
+    }
 })
