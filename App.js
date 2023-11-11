@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddPatientsPage from './Components/AddPatientsPage';
 import ViewAllPatientsPage from './Components/ViewAllPatientsPage'
 import PatientDetails from './Components/PatientDetails'
+import NewClinicalRecord from './Components/NewClinicalRecordScreen';
 
 
 export default function App() {
@@ -14,7 +15,8 @@ export default function App() {
     return (
       <Stack.Navigator >
         <Stack.Screen name="Patients" component={ViewAllPatientsPage} />
-        <Stack.Screen name="PatientDetails" component={PatientDetails} />
+        <Stack.Screen name="Patient Details" component={PatientDetails} />
+        <Stack.Screen name="New Clinical Record" component={NewClinicalRecord} />
       </Stack.Navigator>
     )
   }
