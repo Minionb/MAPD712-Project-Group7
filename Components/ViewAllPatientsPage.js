@@ -4,7 +4,8 @@ import { Feather, Octicons } from "@expo/vector-icons";
 import PatientCard from './patientCard';
 
 export default function PatientsList(props) {
-  const [search, setSearch] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [clicked, setClicked] = useState(false);
   const [patients, setPatients] = useState([]);
   const [refreshIndicator, setRefreshIndicator] = useState(false);
@@ -47,19 +48,30 @@ export default function PatientsList(props) {
           </View>
         </TouchableHighlight>
         <View style={styles.searchBar}>
-          <Feather
-            name="search"
-            size={20}
-            color="black"
-            style={{marginLeft: 1, paddingLeft: 5}}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder='Search patient'
-            onChangeText={text=>setSearch(text)}
-            onFocus={() => {setClicked(true);}}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder='First Name'
+          onChangeText={text=>setFirstName(text)}
+          onFocus={() => {setClicked(true);}}
+        />
         </View>
+        <View style={styles.searchBar}>
+        <TextInput
+          style={styles.input}
+          placeholder='Last Name'
+          onChangeText={text=>setLastName(text)}
+          onFocus={() => {setClicked(true);}}
+        />
+        </View>
+        <TouchableHighlight onPress={()=>{}}>
+          <Octicons
+            name="search"
+            size={22}
+            color="black"
+             style={{marginLeft: 1, paddingLeft: 2}}
+          />
+        </TouchableHighlight>
+
         <TouchableHighlight onPress={()=>{}}>
           <View style={{paddingLeft: 5, paddingTop: 3}}>
             <Octicons name='filter' size={24}/>
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flexDirection: 'row',
-    width: '85%',
+    width: '40%',
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",
