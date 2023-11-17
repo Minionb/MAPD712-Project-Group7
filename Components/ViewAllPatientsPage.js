@@ -4,7 +4,8 @@ import { Feather, Octicons } from "@expo/vector-icons";
 import PatientCard from './patientCard';
 
 export default function PatientsList(props) {
-  const [search, setSearch] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [clicked, setClicked] = useState(false);
   const [patients, setPatients] = useState([]);
   const [refreshIndicator, setRefreshIndicator] = useState(false);
@@ -15,6 +16,27 @@ export default function PatientsList(props) {
       .then(data => setPatients(data))
       .catch(error => console.log(error))
   };
+
+  const getPatientsByName = async (firstName, lastName) => {
+    var endpoint = 'http://127.0.0.1:3000/patients'
+    if (firstName != '' && lastName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName + '&last_name=' + lastName
+      console.log(firstName)
+      console.log(lastName)
+    }
+    else if (firstName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName
+      console.log(firstName)
+    }
+    else if (lastName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?last_name=' + lastName
+      console.log(lastName)
+    }
+    await fetch (endpoint)
+      .then(response => response.json())
+      .then(data => setPatients(data))
+      .catch(error => console.log(error))
+  }
 
   useEffect(() => {
     fetchPatients();
@@ -47,19 +69,30 @@ export default function PatientsList(props) {
           </View>
         </TouchableHighlight>
         <View style={styles.searchBar}>
-          <Feather
-            name="search"
-            size={20}
-            color="black"
-            style={{marginLeft: 1, paddingLeft: 5}}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder='Search patient'
-            onChangeText={text=>setSearch(text)}
-            onFocus={() => {setClicked(true);}}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder='First Name'
+          onChangeText={text=>setFirstName(text)}
+          onFocus={() => {setClicked(true);}}
+        />
         </View>
+        <View style={styles.searchBar}>
+        <TextInput
+          style={styles.input}
+          placeholder='Last Name'
+          onChangeText={text=>setLastName(text)}
+          onFocus={() => {setClicked(true);}}
+        />
+        </View>
+        <TouchableHighlight onPress={()=>{getPatientsByName(firstName,lastName)}}>
+          <Octicons
+            name="search"
+            size={22}
+            color="black"
+             style={{marginLeft: 1, paddingLeft: 2}}
+          />
+        </TouchableHighlight>
+
         <TouchableHighlight onPress={()=>{}}>
           <View style={{paddingLeft: 5, paddingTop: 3}}>
             <Octicons name='filter' size={24}/>
@@ -147,7 +180,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flexDirection: 'row',
-    width: '85%',
+    width: '40%',
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",
