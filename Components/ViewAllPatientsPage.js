@@ -17,6 +17,27 @@ export default function PatientsList(props) {
       .catch(error => console.log(error))
   };
 
+  const getPatientsByName = async (firstName, lastName) => {
+    var endpoint = 'http://127.0.0.1:3000/patients'
+    if (firstName != '' && lastName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName + '&last_name=' + lastName
+      console.log(firstName)
+      console.log(lastName)
+    }
+    else if (firstName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName
+      console.log(firstName)
+    }
+    else if (lastName != ''){
+      endpoint = 'http://127.0.0.1:3000/patients?last_name=' + lastName
+      console.log(lastName)
+    }
+    await fetch (endpoint)
+      .then(response => response.json())
+      .then(data => setPatients(data))
+      .catch(error => console.log(error))
+  }
+
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -63,7 +84,7 @@ export default function PatientsList(props) {
           onFocus={() => {setClicked(true);}}
         />
         </View>
-        <TouchableHighlight onPress={()=>{}}>
+        <TouchableHighlight onPress={()=>{getPatientsByName(firstName,lastName)}}>
           <Octicons
             name="search"
             size={22}
