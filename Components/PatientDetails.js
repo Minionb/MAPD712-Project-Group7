@@ -100,9 +100,13 @@ function ClinicalTestDataScreen() {
                 ListEmptyComponent = {<Text>No Clinical Records</Text>}
                 extraData={refreshIndicator}
             />
-            <Button onPress={() => nav.navigate('New Clinical Record',{
+            {/* <Button onPress={() => nav.navigate('New Clinical Record',{
                 patientId: patientDetails._id
-            })} title="New Record"></Button>
+            })} title="New Record"></Button> */}
+            <Button onPress={() => nav.navigate('New Clinical Record',{
+                selectedPatientId: patientDetails._id,
+                patientName: patientDetails.first_name + " " + patientDetails.last_name
+            })} title="New Record" />
         </View>
     )
 }
@@ -179,11 +183,11 @@ export const updateClinicalDataCondition = function(id, newData, patientId) {
         })
         .then(response => {
             if (response.ok) {
-                // Data deleted successfully
+                // Data condition updated successfully
                 console.log('Data condition updated');
             } 
             else {
-                // Error occurred while deleting data
+                // Error occurred while updating data condition
                 console.log('Error updating data condition');
             }
         })
