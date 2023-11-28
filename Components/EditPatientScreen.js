@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const AddPatientsPage = () => {
+const EditPatientScreen = (route, navigation) => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [additionalNotes, setAdditionalNotes] = useState(" ")
@@ -121,7 +121,7 @@ const AddPatientsPage = () => {
   return (
     <View style={styles.container}>
         <View style={styles.allignComponents}>
-            <Text testID="firstName" style={styles.text}>First Name: </Text>
+            <Text style={styles.text}>First Name: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setFirstName(text)}
             value={firstName} 
@@ -129,14 +129,14 @@ const AddPatientsPage = () => {
         </View>
         <View style={styles.allignComponents}>
             <Text style={styles.text}>Last Name: </Text>
-            <TextInput testID="lastName" style={styles.textInput} 
+            <TextInput style={styles.textInput} 
             onChangeText={text => setLastName(text)}
             value={lastName} 
             />
         </View>
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Gender: </Text>
-        <DropDownPicker testID="gender"
+        <DropDownPicker 
             open={open}
             value={gender}
             items={genderItems}
@@ -151,7 +151,7 @@ const AddPatientsPage = () => {
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Date of Birth: </Text>
         <View style={styles.dateContainer}>
-            <DateTimePicker 
+            <DateTimePicker
             maximumDate= {today}
             testID="dateTimePicker"
             value={dateOfBirth}
@@ -164,35 +164,35 @@ const AddPatientsPage = () => {
         </View>
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Address: </Text>
-            <TextInput testID="address" style={styles.textInput} 
+            <TextInput style={styles.textInput} 
             onChangeText={text => setAddress(text)}
             value={address} 
             />
         </View>
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Department: </Text>
-            <TextInput testID="department" style={styles.textInput} 
+            <TextInput style={styles.textInput} 
             onChangeText={text => setDepartment(text)}
             value={department} 
             />
         </View>
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Doctor: </Text>
-            <TextInput testID="doctor" style={styles.textInput} 
+            <TextInput style={styles.textInput} 
             onChangeText={text => setDoctor(text)}
             value={doctor} 
             />
         </View>
         <View style={styles.allignComponents}>
         <Text style={styles.text}>Additional Notes: </Text>
-            <TextInput testID="additionalNotes" style={styles.textInput} 
+            <TextInput style={styles.textInput} 
             onChangeText={text => setAdditionalNotes(text)}
             value={additionalNotes} 
             />
         </View>
-        <TouchableOpacity testID="submitButton" style={styles.button}
+        <TouchableOpacity style={styles.button}
             onPress={() => saveData()}>
-            <Text>Submit</Text>
+            <Text>Summit</Text>
         </TouchableOpacity>
     </View>
   );
@@ -254,4 +254,4 @@ const styles = StyleSheet.create({
       },
 })
 
-export default AddPatientsPage;
+export default EditPatientScreen;

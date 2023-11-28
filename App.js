@@ -5,6 +5,7 @@ import AddPatientsPage from './Components/AddPatientsPage';
 import ViewAllPatientsPage from './Components/ViewAllPatientsPage'
 import PatientDetails from './Components/PatientDetails'
 import NewClinicalRecord from './Components/NewClinicalRecordScreen';
+import EditPatientScreen from './Components/EditPatientScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -16,6 +17,7 @@ export default function App() {
         <Stack.Screen name="Patients" component={ViewAllPatientsPage} />
         <Stack.Screen name="Patient Details" component={PatientDetails} />
         <Stack.Screen name="New Clinical Record" component={NewClinicalRecord} />
+        <Stack.Screen name="Edit Patients" component={EditPatientScreen} />
 
       </Stack.Navigator>
     )
