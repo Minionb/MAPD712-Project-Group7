@@ -14,6 +14,8 @@ export default function NewClinicalRecord({route, navigation}) {
     const [open, setOpen] = useState('');
     const [invalidEnrty , setInvalidEntry] = useState('')
     const today = new Date()
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     const [typeItems, setTypeItems] = useState([
         {label: 'Blood Pressure (X/Y mmHg)', value: 'Blood Pressure'},
@@ -34,7 +36,7 @@ export default function NewClinicalRecord({route, navigation}) {
         console.log(newRecord)
 
         const addNewRecord = async () => {
-            await fetch('http://127.0.0.1:3000/patients/testdata', {
+            await fetch(apiRenderString+'/testdata', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

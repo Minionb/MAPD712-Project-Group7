@@ -14,6 +14,8 @@ const AddPatientsPage = () => {
     const [gender, setGender] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const today = new Date()
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     const [genderItems, setGenderItems] = useState([
         {label: 'Male', value: 'Male'},
@@ -52,7 +54,7 @@ const AddPatientsPage = () => {
 
         if (missingFields.length == 0){
             try {
-              const response = await fetch('http://127.0.0.1:3000/patients', {
+              const response = await fetch(apiRenderString, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

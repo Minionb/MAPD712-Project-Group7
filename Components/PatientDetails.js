@@ -13,9 +13,12 @@ export default function PatientDetails({route, navigation}) {
     const [isLoading, setIsLoading] = useState(true);
     var hasAdditionalNotes = false
 
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
+
     useEffect(() => {
         const fetchPatientDetails = async () => {
-            await fetch ('http://127.0.0.1:3000/patients/'+id)
+            await fetch (apiRenderString + '/' + id)
                 .then(response => response.json())
                 .then(data => {
                     setPatientDetails(data)
@@ -60,10 +63,12 @@ function ClinicalTestDataScreen() {
     const [testDataDetails, setTestDataDetails] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [refreshIndicator, setRefreshIndicator] = useState(false);
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     // Fetch test data for specific patient
     const fetchTestDataDetails = async () => {
-        await fetch ('http://127.0.0.1:3000/patients/'+patientDetails._id+'/testdata')
+        await fetch (apiRenderString+'/'+patientDetails._id+'/testdata')
             .then(response => response.json())
             .then(data => {
                 setTestDataDetails(data)
@@ -113,9 +118,11 @@ function ClinicalTestDataScreen() {
 
 export const deleteClinicalData = function(id) {
     console.log(id)
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     const deleteTestData = async () => {
-        await fetch('http://127.0.0.1:3000/patients/testdata/'+id, {
+        await fetch(apiRenderString+'/testdata/'+id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -142,9 +149,11 @@ export const deleteClinicalData = function(id) {
 
 const updatePatientCondition = function(id, newData) {
     console.log(id)
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     const updateCondition = async () => {
-        await fetch('http://127.0.0.1:3000/patients/' + id, {
+        await fetch(apiRenderString + '/' + id, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -172,9 +181,11 @@ const updatePatientCondition = function(id, newData) {
 export const updateClinicalDataCondition = function(id, newData, patientId) {
     //console.log("update " + newData)
     const [patientDetails] = useContext(PageContext)
+    const apiString = 'http://127.0.0.1:3000/patients'
+    const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
     const updateClinicalCondition = async () => {
-        await fetch('http://127.0.0.1:3000/patients/testdata/' + id, {
+        await fetch(apiRenderString + '/testdata/' + id, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
