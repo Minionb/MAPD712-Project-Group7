@@ -1,11 +1,15 @@
-import React from "react";
+import { createContext, useContext} from "react";
 import { StyleSheet, View, Text, Alert } from "react-native";
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Octicons } from "@expo/vector-icons";
 import { deletePatient, deletePatientClinicalData } from "./ViewAllPatientsPage";
 
-export default function PatcientCard(props) {
+export const PageContext = createContext();
+export const Navigation = createContext();
+
+export default function PatcientCard(props, navigation) {
+    // const [nav] = useContext(Navigation)
     console.log(props.onePatient);
 
     var condition = props.onePatient.item.condition;
@@ -26,7 +30,12 @@ export default function PatcientCard(props) {
                         <Octicons name="three-bars" size={20} style={[condition=="bad"?{color: '#fff'}:null || condition=="critical"?{color: '#fff'}:null]}/>
                         </MenuTrigger>
                         <MenuOptions>
-                            <MenuOption >
+                            <MenuOption onSelect={ () => 
+                            { 
+                                // nav.navigate('Edit Patients',{
+                                    
+                                // })
+                            }}>
                                 <Text>Edit</Text>
                             </MenuOption>
                             <MenuOption onSelect={ () => 
