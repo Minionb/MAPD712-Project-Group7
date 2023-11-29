@@ -10,26 +10,29 @@ export default function PatientsList(props) {
   const [patients, setPatients] = useState([]);
   const [refreshIndicator, setRefreshIndicator] = useState(false);
 
+  const apiString = 'http://127.0.0.1:3000/patients'
+  const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
+
   const fetchPatients = async () => {
-    await fetch('http://127.0.0.1:3000/patients')
+    await fetch(apiRenderString)
       .then(response => response.json())
       .then(data => setPatients(data))
       .catch(error => console.log(error))
   };
 
   const getPatientsByName = async (firstName, lastName) => {
-    var endpoint = 'http://127.0.0.1:3000/patients'
+    var endpoint = apiRenderString
     if (firstName != '' && lastName != ''){
-      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName + '&last_name=' + lastName
+      endpoint = apiRenderString + '?first_name=' + firstName + '&last_name=' + lastName
       console.log(firstName)
       console.log(lastName)
     }
     else if (firstName != ''){
-      endpoint = 'http://127.0.0.1:3000/patients?first_name=' + firstName
+      endpoint = apiRenderString + '?first_name=' + firstName
       console.log(firstName)
     }
     else if (lastName != ''){
-      endpoint = 'http://127.0.0.1:3000/patients?last_name=' + lastName
+      endpoint = apiRenderString + '?last_name=' + lastName
       console.log(lastName)
     }
     await fetch (endpoint)
@@ -89,7 +92,7 @@ export default function PatientsList(props) {
             name="search"
             size={22}
             color="black"
-             style={{marginLeft: 1, paddingLeft: 2}}
+            style={{marginLeft: 1, paddingLeft: 2}}
           />
         </TouchableHighlight>
 
@@ -110,9 +113,11 @@ export default function PatientsList(props) {
 
 export const deletePatient = function(id) {
   console.log(id)
+  const apiString = 'http://127.0.0.1:3000/patients'
+  const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
   const deletePatientData = async () => {
-    await fetch('http://127.0.0.1:3000/patients/'+id, {
+    await fetch(apiRenderString + '/'+id, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -139,9 +144,11 @@ return deletePatientData();
 
 export const deletePatientClinicalData = function(id) {
   console.log(id)
+  const apiString = 'http://127.0.0.1:3000/patients'
+  const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
   const deleteRespectivePatientClinicalData = async () => {
-      await fetch('http://127.0.0.1:3000/patients/'+id + '/testdata', {
+      await fetch(apiRenderString + '/' + id + '/testdata', {
           method: 'DELETE',
           headers: {
               'Content-Type': 'application/json'
