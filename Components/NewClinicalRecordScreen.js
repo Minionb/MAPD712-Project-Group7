@@ -76,13 +76,22 @@ export default function NewClinicalRecord({route, navigation}) {
             console.log("readingvalue empty")
         }
         else {
-            Alert.alert("Save New Clinical Data", "Are you sure you want to save this as a new data entry?\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime, [
+            Alert.alert('Save New Clinical Data', "Are you sure you want to save this as a new data entry?\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime, 
+            [
                 {
                     text: 'Save',
                     onPress: () => {
                         console.log("Save Option Pressed")
                         handleSave();
-                        navigation.goBack();
+                        const infoCreatedStatement = "Record Created:\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime
+                        Alert.alert(
+                            'Successfully Created Clinical Record!',
+                            infoCreatedStatement,
+                          [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') }
+                          ],
+                          { cancelable: false }
+                          )
                     }
                 },
                 {
