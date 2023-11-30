@@ -3,7 +3,7 @@ import { Text, StyleSheet, ScrollView, View } from 'react-native';
 export default function PatientDeatialsTabScreen(props) {
 
     var dateString = new Date(props.details.date_of_birth)
-    dateString = dateString.toLocaleDateString();
+    dateString = dateString.toISOString().split('T')[0];
 
     var hasAdditionalNotes = false
 

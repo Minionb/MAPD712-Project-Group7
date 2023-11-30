@@ -5,14 +5,12 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Octicons } from "@expo/vector-icons";
 import { deletePatient, deletePatientClinicalData } from "./ViewAllPatientsPage";
 
-export const PageContext = createContext();
-export const Navigation = createContext();
-
-export default function PatcientCard(props, navigation) {
-    // const [nav] = useContext(Navigation)
-    console.log(props.onePatient);
+export default function PatcientCard(props) {
+    //console.log(props.onePatient);
 
     var condition = props.onePatient.item.condition;
+    const currentPatientInfo = props.onePatient.item
+    const nav = props.navigation
 
     return (
         <MenuProvider skipInstanceCheck={true}>
@@ -32,9 +30,9 @@ export default function PatcientCard(props, navigation) {
                         <MenuOptions>
                             <MenuOption onSelect={ () => 
                             { 
-                                // nav.navigate('Edit Patients',{
-                                    
-                                // })
+                                nav.navigate('Edit Patients',{
+                                    currentPatientInfo: currentPatientInfo
+                                });
                             }}>
                                 <Text>Edit</Text>
                             </MenuOption>
