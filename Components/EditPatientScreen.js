@@ -19,12 +19,8 @@ const EditPatientScreen = (props) => {
 
     const currentPatientInfo = props.route.params.currentPatientInfo
     const patientID = currentPatientInfo._id
-    const currentFirstName = currentPatientInfo.first_name
 
     const formattedToday = today.toISOString().split('T')[0]
-
-    console.log(currentFirstName)
-    console.log(formattedToday)
 
     const [genderItems, setGenderItems] = useState([
         {label: 'Male', value: 'Male'},
@@ -166,14 +162,14 @@ const EditPatientScreen = (props) => {
     <View style={styles.container}>
         <View style={styles.allignComponents}>
             <Text style={styles.text}>Edit First Name: </Text>
-            <TextInput style={styles.textInput} 
+            <TextInput testID="edit-first-name-input" style={styles.textInput} 
             onChangeText={text => setFirstName(text)}
             value={firstName} 
             />
         </View>
         <View style={styles.allignComponents}>
             <Text style={styles.text}>Edit Last Name: </Text>
-            <TextInput style={styles.textInput} 
+            <TextInput testID="edit-last-name-input" style={styles.textInput} 
             onChangeText={text => setLastName(text)}
             value={lastName} 
             />
@@ -234,7 +230,7 @@ const EditPatientScreen = (props) => {
             value={additionalNotes} 
             />
         </View>
-        <TouchableOpacity style={styles.button}
+        <TouchableOpacity testID='submit-button' style={styles.button}
             onPress={() => onSubmit()}>
             <Text>Submit</Text>
         </TouchableOpacity>
