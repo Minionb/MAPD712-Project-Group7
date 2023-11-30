@@ -12,7 +12,7 @@ export default function PatientDetails({route, navigation}) {
     const [patientDetails, setPatientDetails] = useState({})
     const [isLoading, setIsLoading] = useState(true);
     var hasAdditionalNotes = false
-
+    
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
@@ -87,12 +87,13 @@ function ClinicalTestDataScreen() {
         setRefreshIndicator(!refreshIndicator);
         fetchTestDataDetails();
     }
+    const patientName = patientDetails.first_name + " " + patientDetails.last_name
 
     renderItem = (data) => {
 
         // Data cards
         return (
-            <ClinicalTestDataCard oneRecord={data}/>
+            <ClinicalTestDataCard oneRecord={data} patientName={patientName} selectedPatientId={patientDetails._id} navigation={nav} />
         )
     }
 

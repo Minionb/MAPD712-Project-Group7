@@ -27,96 +27,114 @@ const AddPatientsPage = () => {
         setDateOfBirth(currentDate);
       };
 
+    const onSubmit = async () => {
+      var missingFields = []
+      if (firstName == ""){
+          missingFields.push("First Name")
+      }
+      if (lastName == ""){
+          missingFields.push("Last Name")
+      }
+      if (gender == ""){
+          missingFields.push("Gender")
+      }
+      if (dateOfBirth == ""){
+          missingFields.push("Date of Birth")
+      }
+      if (address == ""){
+          missingFields.push("Address")
+      }
+      if (department == ""){
+          missingFields.push("Department")
+      }
+      if (doctor == ""){
+          missingFields.push("Doctor")
+      }
+
+      if (missingFields.length == 0){
+        var dateOfBirthString = (new Date(dateOfBirth)).toLocaleDateString();
+
+        Alert.alert(
+          'Create New Patient',
+          'Are you sure you want to save this as a new patient entry?\n\nFirst Name: '+ firstName + '\nLast Name: '+ lastName + '\nGender: '+ gender 
+                  + "\nAddress: " + address + "\nDate of Birth: " + dateOfBirthString + "\nDepartment: " + department
+                  + "\nDoctor: " + doctor + "\nAdditional Notes: " + additionalNotes,
+          [
+            { text: 'Save', onPress: () => {
+              
+              try {
+                const data = saveData()
+                
+                Alert.alert(
+                  'Successfully Created Patient!',
+                  'First Name: '+ firstName + '\nLast Name: '+ lastName + '\nGender: '+ gender 
+                  + "\nAddress: " + address + "\nDate of Birth: " + dateOfBirthString + "\nDepartment: " + department
+                  + "\nDoctor: " + doctor + "\nAdditional Notes: " + additionalNotes,
+                  [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                  ],
+                  { cancelable: false }
+                );
+                setFirstName("")
+                setLastName("")
+                setGender("")
+                setAdditionalNotes("")
+                setAddress("")
+                setDepartment("")
+                setDoctor("")
+                setDateOfBirth(new Date())
+    
+              } catch (error) {
+                // Handle any errors that occurred during the API call
+                console.error(error);
+                Alert.alert(
+                  'Server Error! Please contact Support.',
+                  [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                  ],
+                  { cancelable: false }
+                );
+              }
+            }},
+            { text: 'Cancel', onPress: () => console.log('Cancel Create Patient Request')  }
+          ],
+        );
+      }
+      else{
+          const missingFieldsString = missingFields.join(', ')
+          Alert.alert(
+              'Missing Fields',
+              'You miss the following fields: '+ missingFieldsString + '. Please enter the required fields to proceed.',
+              [
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+              ],
+              { cancelable: false }
+            );
+      }
+    }
+
     // Function to send data to db
     const saveData = async () => {
-        var missingFields = []
-        if (firstName == ""){
-            missingFields.push("First Name")
-        }
-        if (lastName == ""){
-            missingFields.push("Last Name")
-        }
-        if (gender == ""){
-            missingFields.push("Gender")
-        }
-        if (dateOfBirth == ""){
-            missingFields.push("Date of Birth")
-        }
-        if (address == ""){
-            missingFields.push("Address")
-        }
-        if (department == ""){
-            missingFields.push("Department")
-        }
-        if (doctor == ""){
-            missingFields.push("Doctor")
-        }
-
-        if (missingFields.length == 0){
-            try {
-              const response = await fetch(apiRenderString, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    first_name: firstName,
-                    last_name: lastName,
-                    gender: gender,
-                    address: address,
-                    date_of_birth: dateOfBirth,
-                    department: department,
-                    doctor: doctor,
-                    additional_notes: additionalNotes,
-                }),
-              });
-              const data = await response.json();
-              // Process the response data
-              console.log(data);
-              var dateOfBirthString = (new Date(data.date_of_birth)).toLocaleDateString();
-
-              Alert.alert(
-                'Successfully Created Patient!',
-                'Information: First Name: '+ data.first_name + ', Last Name: '+ data.last_name + ', Gender: '+ data.gender 
-                + ", Address: " + data.address + ", Date of Birth: " + dateOfBirthString + ", Department: " + data.department
-                + ", Doctor: " + data.doctor + ", Additional Notes: " + data.additional_notes,
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-              setFirstName("")
-              setLastName("")
-              setGender("")
-              setAdditionalNotes("")
-              setAddress("")
-              setDepartment("")
-              setDoctor("")
-              setDateOfBirth(new Date())
-
-            } catch (error) {
-              // Handle any errors that occurred during the API call
-              console.error(error);
-              Alert.alert(
-                'Server Error! Please contact Support.',
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-            }
-        }
-        else{
-            const missingFieldsString = missingFields.join(', ')
-            Alert.alert(
-                'Missing Fields',
-                'You miss the following fields: '+ missingFieldsString + '. Please enter the required fields to proceed.',
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-        }
+      const response = await fetch(apiRenderString, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            gender: gender,
+            address: address,
+            date_of_birth: dateOfBirth,
+            department: department,
+            doctor: doctor,
+            additional_notes: additionalNotes,
+        }),
+      });
+      const data = await response.json();
+      // Process the response data
+      console.log(data);
+      return data
     };
     
 
@@ -193,7 +211,7 @@ const AddPatientsPage = () => {
             />
         </View>
         <TouchableOpacity testID="submitButton" style={styles.button}
-            onPress={() => saveData()}>
+            onPress={() => onSubmit()}>
             <Text>Submit</Text>
         </TouchableOpacity>
     </View>

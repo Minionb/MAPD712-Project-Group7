@@ -37,8 +37,7 @@ const EditPatientScreen = (props) => {
       };
 
 
-    // Function to send data to db to update patient
-    const updatePatient = async () => {
+    const onSubmit = async () => {
       var updatedFields = []
       var updateBody = []
       const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0]
@@ -46,35 +45,35 @@ const EditPatientScreen = (props) => {
       
 
       if (firstName != ""){
-          updatedFields.push("First Name to " + firstName)
+          updatedFields.push("First Name: " + firstName)
           updateBody.push('"first_name": ' + '"' + firstName + '"')
       } 
       if (lastName != ""){
-          updatedFields.push("Last Name to " + lastName)
+          updatedFields.push("Last Name: " + lastName)
           updateBody.push('"last_name" : ' + '"' + lastName + '"')
       }
       if (gender != ""){
-          updatedFields.push("Gender to " + gender)
+          updatedFields.push("Gender:" + gender)
           updateBody.push('"gender" : ' + '"' + gender + '"')
       }
       if (address != ""){
-        updatedFields.push("Address to " + address)
+        updatedFields.push("Address: " + address)
         updateBody.push('"address": ' + '"' + address + '"')
       }
       if (formattedDateOfBirth != formattedToday){
-          updatedFields.push("Date of Birth to " + formattedDateOfBirth)
+          updatedFields.push("Date of Birth: " + formattedDateOfBirth)
           updateBody.push('"date_of_birth": ' + '"' + formattedDateOfBirth + '"')
       }
       if (department != ""){
-          updatedFields.push("Department to " + department)
+          updatedFields.push("Department: " + department)
           updateBody.push('"department": ' + '"' + department + '"')
       }
       if (doctor != ""){
-          updatedFields.push("Doctor to " + doctor)
+          updatedFields.push("Doctor: " + doctor)
           updateBody.push('"doctor" : '  + '"' + doctor + '"')
       }
       if (additionalNotes != ""){
-        updatedFields.push("Additional Notes to " + additionalNotes)
+        updatedFields.push("Additional Notes: " + additionalNotes)
         updateBody.push('"additional_notes" : '  + '"' + additionalNotes + '"')
     }
 
@@ -83,35 +82,45 @@ const EditPatientScreen = (props) => {
 
       if (updatedFields.length != 0){
           try {
-            const apiURL = apiRenderString + "/" + patientID
-            const response = await fetch(apiURL, {
-              method: 'Patch',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: updateBodyString,
-            });
-            const data = await response.json();
+            // save the update data to DB
+            const data = updatePatient(updateBodyString)
             // Process the response data
             console.log(data);
 
-            const infoUpdatedStatement = "You have updated: " + updatedFields.join(",")
+            const confirmUpdatedStatement = "Are you sure you want to update this patient?\n\n" + updatedFields.join(",\n")
             Alert.alert(
-              'Successfully Edited Patient!',
-              infoUpdatedStatement,
+              'Update Patient Information',
+              confirmUpdatedStatement,
               [
-                { text: 'OK', onPress: () => console.log('OK Pressed') }
-              ],
-              { cancelable: false }
-            );
-            setFirstName("")
-            setLastName("")
-            setGender("")
-            setAdditionalNotes("")
-            setAddress("")
-            setDepartment("")
-            setDoctor("")
-            setDateOfBirth(new Date())
+                { text: 'OK', onPress: () => {
+                  
+                  updatePatient(updateBodyString)
+
+                  setFirstName("")
+                  setLastName("")
+                  setGender("")
+                  setAdditionalNotes("")
+                  setAddress("")
+                  setDepartment("")
+                  setDoctor("")
+                  setDateOfBirth(new Date())
+                  
+                  const infoUpdatedStatement = "You have updated:\n\n" + updatedFields.join(",\n")
+                  Alert.alert(
+                    'Successfully Updated Patient!',
+                    infoUpdatedStatement,
+                  [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                  ],
+                  { cancelable: false }
+                  )} 
+                  },            
+                  {                     
+                    text: 'Cancel',
+                    onPress: () => console.log("Cancel Edit Patient Request.")
+                  }
+              ],);
+
 
           } catch (error) {
             // Handle any errors that occurred during the API call
@@ -126,7 +135,6 @@ const EditPatientScreen = (props) => {
           }
      }
       else{
-          //const missingFieldsString = missingFields.join(', ')
           Alert.alert(
               'No Information Entered',
               'Please update at least one information to proceed.',
@@ -136,6 +144,21 @@ const EditPatientScreen = (props) => {
               { cancelable: false }
             );
       }
+    }
+
+    // Function to send data to db to update patient
+    const updatePatient = async (updateBodyString) => {
+
+      const apiURL = apiRenderString + "/" + patientID
+      const response = await fetch(apiURL, {
+        method: 'Patch',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: updateBodyString,
+      });
+      const data = await response.json();
+      return data
     };
     
 
@@ -212,8 +235,8 @@ const EditPatientScreen = (props) => {
             />
         </View>
         <TouchableOpacity style={styles.button}
-            onPress={() => updatePatient()}>
-            <Text>Summit</Text>
+            onPress={() => onSubmit()}>
+            <Text>Submit</Text>
         </TouchableOpacity>
     </View>
   );

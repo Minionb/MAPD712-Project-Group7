@@ -3,13 +3,18 @@ import { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function NewClinicalRecord({route, navigation}) {
-    const { selectedPatientId, patientName } = route.params;
+export default function EditClinicalRecord({route, navigation}) {
+    console.log(route)
+    const patientName  = route.params.patientName;
+    const selectedPatientId = route.params.selectedPatientId
+   
+    const currentClinicalDataInfo = route.params.currentClinicalDataInfo
+    const currentTestID = currentClinicalDataInfo._id
+    console.log(currentClinicalDataInfo)
 
     const [dataType, setDataType] = useState('');
     const [readingValue, setReadingValue] = useState('');
     const [recordDateTime, setRecordDateTime] = useState(new Date());
-//    const [meassurement, setMeassurement] = useState('')
     const [finalValue, setFinalValue] = useState('');
     const [open, setOpen] = useState('');
     const [invalidEnrty , setInvalidEntry] = useState('')
@@ -30,18 +35,18 @@ export default function NewClinicalRecord({route, navigation}) {
         console.log(recordDateTime)
     };
 
-    const handleSave = () => {
+    const updateClinicalData = () => {
         
-        const newRecord = JSON.stringify({patient_id: selectedPatientId, date_time: recordDateTime, data_type: dataType, reading_value: finalValue})
-        console.log(newRecord)
+        const updateRecord = JSON.stringify({patient_id: selectedPatientId, date_time: recordDateTime, data_type: dataType, reading_value: finalValue})
+        console.log(updateRecord)
 
         const addNewRecord = async () => {
-            await fetch(apiRenderString+'/testdata', {
-                method: 'POST',
+            await fetch(apiRenderString+'/testdata/' + currentTestID, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: newRecord
+                body: updateRecord
             })
             .then(response => {
                 if (response.ok) {
@@ -76,23 +81,22 @@ export default function NewClinicalRecord({route, navigation}) {
             console.log("readingvalue empty")
         }
         else {
-            Alert.alert('Save New Clinical Data', "Are you sure you want to save this as a new data entry?\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime, 
-            [
+            Alert.alert("Update Clinical Data", "Are you sure you want to update this record?\n\nRecord ID: "+ currentTestID +"\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime, [
                 {
                     text: 'Save',
                     onPress: () => {
                         console.log("Save Option Pressed")
-                        handleSave();
-                        const infoCreatedStatement = "Record Created:\n\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime
+                        updateClinicalData();
+                        const infoUpdatedStatement = "You have updated:\n\nRecord ID: "+ currentTestID +"\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime
                         Alert.alert(
-                            'Successfully Created Clinical Record!',
-                            infoCreatedStatement,
-                          [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') }
-                          ],
-                          { cancelable: false }
-                          )
-                    }
+                          'Successfully Updated Clinical Record!',
+                          infoUpdatedStatement,
+                        [
+                          { text: 'OK', onPress: () => console.log('OK Pressed') }
+                        ],
+                        { cancelable: false }
+                        )} 
+                    
                 },
                 {
                     text: 'Cancel',
@@ -106,7 +110,7 @@ export default function NewClinicalRecord({route, navigation}) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Select Data Type</Text>
+            <Text style={styles.header}>Edit Data Type</Text>
             <Text style={invalidEnrty=='dt'?styles.redText:styles.whiteText}>*Invalid Data Type*</Text>
             <DropDownPicker 
                 open={open}
@@ -122,7 +126,7 @@ export default function NewClinicalRecord({route, navigation}) {
                 dropDownStyle={{ backgroundColor: '#fafafa' }}
             />
             
-            <Text style={styles.header}>Enter {dataType} Value</Text>
+            <Text style={styles.header}>Edit {dataType} Value</Text>
             <Text style={invalidEnrty=='rv'?styles.redText:styles.whiteText}>*Invalid Value*</Text>
             <View style={styles.rowContainer}>
                 <View style={styles.inputRow}>
@@ -171,7 +175,7 @@ export default function NewClinicalRecord({route, navigation}) {
                 <Button onPress={
                     () => {
                         createAlert()
-                    }} title="Save Record"></Button>
+                    }} title="Update Record"></Button>
             </View>
             
         </View>
