@@ -108,7 +108,7 @@ export default function NewClinicalRecord({route, navigation}) {
         <View style={styles.container}>
             <Text style={styles.header}>Select Data Type</Text>
             <Text style={invalidEnrty=='dt'?styles.redText:styles.whiteText}>*Invalid Data Type*</Text>
-            <DropDownPicker 
+            <DropDownPicker testID="data-type-dropdown"
                 open={open}
                 value={dataType}
                 items={typeItems}
@@ -126,7 +126,7 @@ export default function NewClinicalRecord({route, navigation}) {
             <Text style={invalidEnrty=='rv'?styles.redText:styles.whiteText}>*Invalid Value*</Text>
             <View style={styles.rowContainer}>
                 <View style={styles.inputRow}>
-                <TextInput 
+                <TextInput testID='reading-value-input'
                     placeholder={dataType=='Blood Pressure'?"X/Y":"X"}
                     onChangeText={text => {
                         setReadingValue(text)
