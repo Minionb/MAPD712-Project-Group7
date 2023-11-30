@@ -87,8 +87,16 @@ export default function EditClinicalRecord({route, navigation}) {
                     onPress: () => {
                         console.log("Save Option Pressed")
                         updateClinicalData();
-                        navigation.goBack();
-                    }
+                        const infoUpdatedStatement = "You have updated:\n\nRecord ID: "+ currentTestID +"\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime
+                        Alert.alert(
+                          'Successfully Updated Clinical Record!',
+                          infoUpdatedStatement,
+                        [
+                          { text: 'OK', onPress: () => console.log('OK Pressed') }
+                        ],
+                        { cancelable: false }
+                        )} 
+                    
                 },
                 {
                     text: 'Cancel',

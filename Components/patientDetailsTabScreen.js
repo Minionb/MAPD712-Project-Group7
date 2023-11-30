@@ -4,8 +4,12 @@ export default function PatientDeatialsTabScreen(props) {
 
     var dateString = new Date(props.details.date_of_birth)
     dateString = dateString.toISOString().split('T')[0];
-
+    var additional_notes = props.details.additional_notes
+    
     var hasAdditionalNotes = false
+    if (additional_notes != ""){
+        hasAdditionalNotes = true
+    }
 
     return (
         <ScrollView style={styles.scrollContainer}>
