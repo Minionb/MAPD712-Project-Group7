@@ -9,6 +9,7 @@ export default function PatientsList(props) {
   const [clicked, setClicked] = useState(false);
   const [patients, setPatients] = useState([]);
   const [refreshIndicator, setRefreshIndicator] = useState(false);
+  const nav = props.navigation
 
   const apiString = 'http://127.0.0.1:3000/patients'
   const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
@@ -55,10 +56,10 @@ export default function PatientsList(props) {
 
     return (
       <TouchableOpacity
-        onPress={() => props.navigation.navigate('Patient Details', {
+        onPress={() => nav.navigate('Patient Details', {
         id: item.item._id
       })}>
-        <PatientCard onePatient={item}/>
+        <PatientCard onePatient={item} navigation={nav}/>
       </TouchableOpacity>
     )
   }

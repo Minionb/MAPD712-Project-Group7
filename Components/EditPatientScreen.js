@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const EditPatientScreen = (route, navigation) => {
+const EditPatientScreen = (props) => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [additionalNotes, setAdditionalNotes] = useState(" ")
@@ -17,6 +17,15 @@ const EditPatientScreen = (route, navigation) => {
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
+    const currentPatientInfo = props.route.params.currentPatientInfo
+    const patientID = currentPatientInfo._id
+    const currentFirstName = currentPatientInfo.first_name
+
+    const formattedToday = today.toISOString().split('T')[0]
+
+    console.log(currentFirstName)
+    console.log(formattedToday)
+
     const [genderItems, setGenderItems] = useState([
         {label: 'Male', value: 'Male'},
         {label: 'Female', value: 'Female'}
@@ -27,117 +36,127 @@ const EditPatientScreen = (route, navigation) => {
         setDateOfBirth(currentDate);
       };
 
-    // Function to send data to db
-    const saveData = async () => {
-        var missingFields = []
-        if (firstName == ""){
-            missingFields.push("First Name")
-        }
-        if (lastName == ""){
-            missingFields.push("Last Name")
-        }
-        if (gender == ""){
-            missingFields.push("Gender")
-        }
-        if (dateOfBirth == ""){
-            missingFields.push("Date of Birth")
-        }
-        if (address == ""){
-            missingFields.push("Address")
-        }
-        if (department == ""){
-            missingFields.push("Department")
-        }
-        if (doctor == ""){
-            missingFields.push("Doctor")
-        }
 
-        if (missingFields.length == 0){
-            try {
-              const response = await fetch(apiRenderString, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    first_name: firstName,
-                    last_name: lastName,
-                    gender: gender,
-                    address: address,
-                    date_of_birth: dateOfBirth,
-                    department: department,
-                    doctor: doctor,
-                    additional_notes: additionalNotes,
-                }),
-              });
-              const data = await response.json();
-              // Process the response data
-              console.log(data);
-              var dateOfBirthString = (new Date(data.date_of_birth)).toLocaleDateString();
+    // Function to send data to db to update patient
+    const updatePatient = async () => {
+      var updatedFields = []
+      var updateBody = []
+      const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0]
+      console.log(formattedDateOfBirth == formattedToday)
+      
 
-              Alert.alert(
-                'Successfully Created Patient!',
-                'Information: First Name: '+ data.first_name + ', Last Name: '+ data.last_name + ', Gender: '+ data.gender 
-                + ", Address: " + data.address + ", Date of Birth: " + dateOfBirthString + ", Department: " + data.department
-                + ", Doctor: " + data.doctor + ", Additional Notes: " + data.additional_notes,
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-              setFirstName("")
-              setLastName("")
-              setGender("")
-              setAdditionalNotes("")
-              setAddress("")
-              setDepartment("")
-              setDoctor("")
-              setDateOfBirth(new Date())
+      if (firstName != ""){
+          updatedFields.push("First Name to " + firstName)
+          updateBody.push('"first_name": ' + '"' + firstName + '"')
+      } 
+      if (lastName != ""){
+          updatedFields.push("Last Name to " + lastName)
+          updateBody.push('"last_name" : ' + '"' + lastName + '"')
+      }
+      if (gender != ""){
+          updatedFields.push("Gender to " + gender)
+          updateBody.push('"gender" : ' + '"' + gender + '"')
+      }
+      if (address != ""){
+        updatedFields.push("Address to " + address)
+        updateBody.push('"address": ' + '"' + address + '"')
+      }
+      if (formattedDateOfBirth != formattedToday){
+          updatedFields.push("Date of Birth to " + formattedDateOfBirth)
+          updateBody.push('"date_of_birth": ' + '"' + formattedDateOfBirth + '"')
+      }
+      if (department != ""){
+          updatedFields.push("Department to " + department)
+          updateBody.push('"department": ' + '"' + department + '"')
+      }
+      if (doctor != ""){
+          updatedFields.push("Doctor to " + doctor)
+          updateBody.push('"doctor" : '  + '"' + doctor + '"')
+      }
+      if (additionalNotes != ""){
+        updatedFields.push("Additional Notes to " + additionalNotes)
+        updateBody.push('"additional_notes" : '  + '"' + additionalNotes + '"')
+    }
 
-            } catch (error) {
-              // Handle any errors that occurred during the API call
-              console.error(error);
-              Alert.alert(
-                'Server Error! Please contact Support.',
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-            }
-        }
-        else{
-            const missingFieldsString = missingFields.join(', ')
+      const updateBodyString = "{" + updateBody.join(", ") + "}"
+      console.log(updateBodyString)
+
+      if (updatedFields.length != 0){
+          try {
+            const apiURL = apiRenderString + "/" + patientID
+            const response = await fetch(apiURL, {
+              method: 'Patch',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: updateBodyString,
+            });
+            const data = await response.json();
+            // Process the response data
+            console.log(data);
+
+            const infoUpdatedStatement = "You have updated: " + updatedFields.join(",")
             Alert.alert(
-                'Missing Fields',
-                'You miss the following fields: '+ missingFieldsString + '. Please enter the required fields to proceed.',
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
-        }
+              'Successfully Edited Patient!',
+              infoUpdatedStatement,
+              [
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+              ],
+              { cancelable: false }
+            );
+            setFirstName("")
+            setLastName("")
+            setGender("")
+            setAdditionalNotes("")
+            setAddress("")
+            setDepartment("")
+            setDoctor("")
+            setDateOfBirth(new Date())
+
+          } catch (error) {
+            // Handle any errors that occurred during the API call
+            console.error(error);
+            Alert.alert(
+              'Server Error! Please contact Support.',
+              [
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+              ],
+              { cancelable: false }
+            );
+          }
+     }
+      else{
+          //const missingFieldsString = missingFields.join(', ')
+          Alert.alert(
+              'No Information Entered',
+              'Please update at least one information to proceed.',
+              [
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+              ],
+              { cancelable: false }
+            );
+      }
     };
     
 
   return (
     <View style={styles.container}>
         <View style={styles.allignComponents}>
-            <Text style={styles.text}>First Name: </Text>
+            <Text style={styles.text}>Edit First Name: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setFirstName(text)}
             value={firstName} 
             />
         </View>
         <View style={styles.allignComponents}>
-            <Text style={styles.text}>Last Name: </Text>
+            <Text style={styles.text}>Edit Last Name: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setLastName(text)}
             value={lastName} 
             />
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Gender: </Text>
+        <Text style={styles.text}>Edit Gender: </Text>
         <DropDownPicker 
             open={open}
             value={gender}
@@ -151,7 +170,7 @@ const EditPatientScreen = (route, navigation) => {
         />
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Date of Birth: </Text>
+        <Text style={styles.text}>Edit Date of Birth: </Text>
         <View style={styles.dateContainer}>
             <DateTimePicker
             maximumDate= {today}
@@ -165,35 +184,35 @@ const EditPatientScreen = (route, navigation) => {
         </View>
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Address: </Text>
+        <Text style={styles.text}>Edit Address: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setAddress(text)}
             value={address} 
             />
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Department: </Text>
+        <Text style={styles.text}>Edit Department: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setDepartment(text)}
             value={department} 
             />
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Doctor: </Text>
+        <Text style={styles.text}>Edit Doctor: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setDoctor(text)}
             value={doctor} 
             />
         </View>
         <View style={styles.allignComponents}>
-        <Text style={styles.text}>Additional Notes: </Text>
+        <Text style={styles.text}>Edit Additional Notes: </Text>
             <TextInput style={styles.textInput} 
             onChangeText={text => setAdditionalNotes(text)}
             value={additionalNotes} 
             />
         </View>
         <TouchableOpacity style={styles.button}
-            onPress={() => saveData()}>
+            onPress={() => updatePatient()}>
             <Text>Summit</Text>
         </TouchableOpacity>
     </View>
@@ -226,7 +245,7 @@ const styles = StyleSheet.create({
       },
       allignComponents: {
         flexDirection: 'row',
-        marginBottom: 20,
+        marginBottom: 15,
       },
       pickerStyle: {
         flex: 1,
