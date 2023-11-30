@@ -5,8 +5,11 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { deleteClinicalData, updateClinicalDataCondition } from "./PatientDetails";
 
 export default function ClinicalTestDataCard(props) {
-    //console.log(props.oneRecord);
-
+    const nav = props.navigation
+    const patientName = props.patientName
+    const selectedPatientId = props.selectedPatientId
+    
+    console.log(selectedPatientId)
     var dateTimeString = new Date(props.oneRecord.item.date_time)
     var dateString = dateTimeString.toLocaleDateString();
     var timeString = dateTimeString.toLocaleTimeString();
@@ -88,7 +91,14 @@ export default function ClinicalTestDataCard(props) {
                                     <Octicons name="three-bars" size={20} style={[{paddingTop: 10}, condition=="bad"?{color: '#fff'}:null || condition=="critical"?{color: '#fff'}:null]} />
                                 </MenuTrigger>
                                 <MenuOptions>
-                                    <MenuOption >
+                                    <MenuOption onSelect={ () => 
+                                    { 
+                                        nav.navigate('Edit Clinical Records',{
+                                            currentClinicalDataInfo: props.oneRecord.item,
+                                            patientName: patientName,
+                                            selectedPatientId: selectedPatientId
+                                        });
+                                    }}>
                                         <Text>Edit</Text>
                                     </MenuOption>
                                     <MenuOption onSelect={ () => {
