@@ -6,6 +6,7 @@ import PatientCard from './patientCard';
 export default function PatientsList(props) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [condition, setCondition] = useState(1);
   const [clicked, setClicked] = useState(false);
   const [patients, setPatients] = useState([]);
   const [refreshIndicator, setRefreshIndicator] = useState(false);
@@ -19,6 +20,36 @@ export default function PatientsList(props) {
       .then(data => setPatients(data))
       .catch(error => console.log(error))
   };
+
+  const getPatientsByCondition = async (conditionNum) => {
+    var endpoint = apiRenderString
+    var condition = ''
+
+    if (conditionNum == 1) {
+      condition = 'critical'
+    }
+    else if (conditionNum == 2) {
+      condition = 'bad'
+    }
+    else if (conditionNum == 3) {
+      condition = 'average'
+    }
+    else if (conditionNum == 4) {
+      condition = 'fine'
+    }
+    else if (conditionNum == 5) {
+      condition = 'good'
+    }
+
+    if (condition != ''){
+      endpoint = apiRenderString + '?condition=' + condition
+      console.log(condition)
+    }
+    await fetch (endpoint)
+      .then(response => response.json())
+      .then(data => setPatients(data))
+      .catch(error => console.log(error))
+  }
 
   const getPatientsByName = async (firstName, lastName) => {
     var endpoint = apiRenderString
@@ -66,7 +97,11 @@ export default function PatientsList(props) {
   return (
     <View style={styles.container}>
       <View style={styles.searchRow}>
-        <TouchableHighlight onPress={()=>{handleRefresh()}}>
+        <TouchableHighlight onPress={()=>{
+            setCondition(1)
+            handleRefresh()
+            
+          }}>
           <View style={{paddingRight: 5, paddingTop: 3}}>
             <Octicons name='arrow-switch' size={24}/>
           </View>
@@ -96,7 +131,28 @@ export default function PatientsList(props) {
           />
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={()=>{}}>
+        <TouchableHighlight onPress={()=>{
+          if (condition == 0) {
+            setCondition(1)
+          }
+          if (condition == 1) {
+            setCondition(2)
+          }
+          if (condition == 2) {
+            setCondition(3)
+          }
+          if (condition == 3) {
+            setCondition(4)
+          }
+          if (condition == 4) {
+            setCondition(5)
+          }
+          if (condition == 5) {
+            setCondition(1)
+          }
+
+          getPatientsByCondition(condition)
+        }}>
           <View style={{paddingLeft: 5, paddingTop: 3}}>
             <Octicons name='filter' size={24}/>
           </View>
@@ -110,6 +166,10 @@ export default function PatientsList(props) {
     </View>
   )
 };
+
+export const sortPatient = function(count) {
+  console.log(count)
+}
 
 export const deletePatient = function(id) {
   console.log(id)
