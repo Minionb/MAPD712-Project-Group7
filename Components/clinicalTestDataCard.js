@@ -8,6 +8,7 @@ export default function ClinicalTestDataCard(props) {
     const nav = props.navigation
     const patientName = props.patientName
     const selectedPatientId = props.selectedPatientId
+    const patientCondition = props.patientCondition
     
     console.log(selectedPatientId)
     var dateTimeString = new Date(props.oneRecord.item.date_time)
@@ -30,7 +31,7 @@ export default function ClinicalTestDataCard(props) {
             else if ((130 > bloodPressure[0] >= 120) && (bloodPressure[1] > 80)) condition = "fine";
             else condition = "good";
 
-            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id)
+            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id, patientCondition)
             break;
         
         case 'Respiratory Rate':
@@ -41,7 +42,7 @@ export default function ClinicalTestDataCard(props) {
             else if (respiratoryRate > 20) condition = "average";
             else if (20 >= respiratoryRate >= 12) condition = "good";
 
-            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id)
+            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id, patientCondition)
             break;
         
         case 'Blood Oxygen Level':
@@ -54,7 +55,7 @@ export default function ClinicalTestDataCard(props) {
             else if (bloodOxygenLevel <= 95) condition = "fine";
             else condition = "good";
 
-            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id)
+            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id, patientCondition)
             break;
 
         case 'Heartbeat Rate':
@@ -67,7 +68,7 @@ export default function ClinicalTestDataCard(props) {
             else if (74 <= bpm <= 79) condition = "bad";
             else if (80 <= bpm) condition = "critical";
 
-            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id)
+            updateClinicalDataCondition(props.oneRecord.item._id, condition, props.oneRecord.item.patient_id, patientCondition)
             break;
         
         default:

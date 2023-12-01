@@ -63,6 +63,8 @@ function ClinicalTestDataScreen() {
     const [testDataDetails, setTestDataDetails] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [refreshIndicator, setRefreshIndicator] = useState(false);
+    //const [patientCondition, setPatientCondition] = useState(0)
+    var patientCondition = 0
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
 
@@ -84,16 +86,46 @@ function ClinicalTestDataScreen() {
     if (isLoading) return (<Text>LOADING</Text>)
 
     const handleRefresh = () => {
-        setRefreshIndicator(!refreshIndicator);
         fetchTestDataDetails();
+        setRefreshIndicator(!refreshIndicator);
     }
     const patientName = patientDetails.first_name + " " + patientDetails.last_name
 
     renderItem = (data) => {
 
+        console.log('\nRecord Condition: ' + data.item.condition + '\n');
+        if (data.item.condition == 'good') {
+            if (1 > patientCondition) {
+                patientCondition = 1
+                console.log("\nPatient condition set to good")
+            }
+        }
+        else if (data.item.condition == 'fine') {
+            if (2 > patientCondition) {
+                patientCondition = 2
+                console.log("Patient condition set to fine")
+            }
+        }
+        else if (data.item.condition == 'average') {
+            if (3 > patientCondition) {
+                patientCondition = 3
+                console.log("Patient condition set to average")
+            }
+        }
+        else if (data.item.condition == 'bad') {
+            if (4 > patientCondition) {
+                patientCondition = 4
+                console.log("Patient condition set to bad")
+            }
+        }
+        else if (data.item.condition == 'critical') {
+            patientCondition = 5
+            console.log("Patient condition set to critical")
+        }
+
         // Data cards
         return (
-            <ClinicalTestDataCard oneRecord={data} patientName={patientName} selectedPatientId={patientDetails._id} navigation={nav} />
+            <ClinicalTestDataCard oneRecord={data} patientName={patientName} selectedPatientId={patientDetails._id} patientCondition={patientCondition} navigation={nav} />
         )
     }
 
@@ -179,7 +211,7 @@ const updatePatientCondition = function(id, newData) {
     return updateCondition();
 }
 
-export const updateClinicalDataCondition = function(id, newData, patientId) {
+export const updateClinicalDataCondition = function(id, newData, patientId, pCondition) {
     //console.log("update " + newData)
     const [patientDetails] = useContext(PageContext)
     const apiString = 'http://127.0.0.1:3000/patients'
@@ -217,16 +249,10 @@ export const updateClinicalDataCondition = function(id, newData, patientId) {
     else if (newData == "fine") conRange = 2;
     else if (newData == "good") conRange = 1;
 
-    var pCondition = 0;
+    console.log("PCondition: " + pCondition + "\nconRange: " + conRange)
 
-    if (patientDetails.condition == "critical") pCondition = 5;
-    else if (patientDetails.condition == "bad") pCondition = 4;
-    else if (patientDetails.condition == "average") pCondition = 3;
-    else if (patientDetails.condition == "fine") pCondition = 2;
-    else if (patientDetails.condition == "good") pCondition = 1;
-
-    if (conRange > pCondition) {
-        console.log("Patient Condition updated")
+    if (conRange >= pCondition) {
+        console.log("Patient Condition updated to: " + newData)
         updatePatientCondition(patientId, newData)
     }
 

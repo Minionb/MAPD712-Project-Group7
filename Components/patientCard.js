@@ -19,7 +19,7 @@ export default function PatcientCard(props) {
                         condition=="fine"?styles.cardBackground2:null ||
                         condition=="average"?styles.cardBackground3:null ||
                         condition=="bad"?styles.cardBackground4:null ||
-                        condition=="critical"?styles.cardBackground5:null 
+                        condition=="critical"?styles.cardBackground5: styles.cardBackgroundD
                 ]}>
                 <View style={styles.cardContent}>
                     <Text style={[styles.text, condition=="bad"?{color: '#fff'}:null || condition=="critical"?{color: '#fff'}:null]}>{props.onePatient.item.first_name} {props.onePatient.item.last_name}</Text>     
@@ -105,4 +105,7 @@ const styles = StyleSheet.create({
     cardBackground5: {
         backgroundColor: '#9a1b22'
     },
+    cardBackgroundD: {
+        backgroundColor: '#cccccc'
+    }
 })
