@@ -61,7 +61,7 @@ export default function EditClinicalRecord({route, navigation}) {
         const updateRecord = JSON.stringify({patient_id: selectedPatientId, date_time: recordDateTime, data_type: dataType, reading_value: finalValue})
         console.log(updateRecord)
 
-        const addNewRecord = async () => {
+        const updateClinicalDataRecord = async () => {
             await fetch(apiRenderString+'/testdata/' + currentTestID, {
                 method: 'PATCH',
                 headers: {
@@ -72,11 +72,11 @@ export default function EditClinicalRecord({route, navigation}) {
             .then(response => {
                 if (response.ok) {
                     // Record successfully created
-                    console.log('Clinical Record Created Successfully');
+                    console.log('Clinical Record Updated Successfully');
                 } 
                 else {
                     // Error occurred while creating clincial record
-                    console.log('Error creating clinical record');
+                    console.log('Error updating clinical record');
                 }
             })
             .catch(error => {
@@ -85,7 +85,7 @@ export default function EditClinicalRecord({route, navigation}) {
             });
         }
                 
-        return addNewRecord();
+        return updateClinicalDataRecord();
     }
 
     // Save alert and check for empty fields
