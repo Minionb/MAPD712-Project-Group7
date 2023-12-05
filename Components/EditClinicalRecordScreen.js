@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Alert, TextInput, Button } from 'react-native';
+import { Text, StyleSheet, View, Alert, TextInput, Button, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,7 +7,6 @@ export default function EditClinicalRecord({route, navigation}) {
     console.log(route)
     const patientName  = route.params.patientName;
     const selectedPatientId = route.params.selectedPatientId
-   
     const currentClinicalDataInfo = route.params.currentClinicalDataInfo
     const currentTestID = currentClinicalDataInfo._id
     console.log(currentClinicalDataInfo)
@@ -18,6 +17,7 @@ export default function EditClinicalRecord({route, navigation}) {
     const [finalValue, setFinalValue] = useState('');
     const [open, setOpen] = useState('');
     const [invalidEnrty , setInvalidEntry] = useState('')
+    const [show, setShow] = useState(Platform.OS === 'android' ? false : true);
     const today = new Date()
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
@@ -30,10 +30,31 @@ export default function EditClinicalRecord({route, navigation}) {
     ])
 
     const onChange = (event,selectedDate) => {
+        if (Platform.OS === 'android') {
+            setShow(!show)
+        }
         const currentDate = selectedDate;
         setRecordDateTime(currentDate);
         console.log(recordDateTime)
     };
+
+    const MyDatePicker = () => {
+        if (Platform.OS === 'android') {
+            return (
+            <TouchableOpacity style={{alignItems: 'center' }} onPress={() => setShow(true)}>
+            <TextInput style={styles.dateButton}
+                editable={false}
+                placeholder="YYYY-MM-DD"
+                value={recordDateTime.toLocaleDateString()}
+                textAlign='center'
+                />
+            </TouchableOpacity>
+            )
+        }
+        else {
+            return null
+        }
+    }
 
     const updateClinicalData = () => {
         
@@ -89,10 +110,10 @@ export default function EditClinicalRecord({route, navigation}) {
                         updateClinicalData();
                         const infoUpdatedStatement = "You have updated:\n\nRecord ID: "+ currentTestID +"\nPatient: "+patientName+"\n"+dataType+": "+readingValue+"\n"+"Recorded on: "+recordDateTime
                         Alert.alert(
-                          'Successfully Updated Clinical Record!',
-                          infoUpdatedStatement,
+                            'Successfully Updated Clinical Record!',
+                            infoUpdatedStatement,
                         [
-                          { text: 'OK', onPress: () => console.log('OK Pressed') }
+                            { text: 'OK', onPress: () => console.log('OK Pressed') }
                         ],
                         { cancelable: false }
                         )} 
@@ -160,8 +181,9 @@ export default function EditClinicalRecord({route, navigation}) {
                 }</Text>
             </View>
             <Text style={styles.header}>Select Date of Recorded Test</Text>
+            <MyDatePicker />
             <View style={styles.dateContainer}>
-                <DateTimePicker
+                {show && <DateTimePicker
                     maximumDate= {today}
                     testID="dateTimePicker"
                     value={recordDateTime}
@@ -169,7 +191,7 @@ export default function EditClinicalRecord({route, navigation}) {
                     is24Hour={true}
                     onChange={onChange}
                     display="default"
-                />
+                />}
             </View>
             <View style={{ paddingTop: 50 }}>
                 <Button onPress={
@@ -228,5 +250,14 @@ const styles = StyleSheet.create({
     },
     redText: {
         color: 'red'
+    },
+    dateButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'black',
+        backgroundColor: 'white', 
+        borderColor: 'black',
+        borderWidth: 2,
+        borderRadius: 8
     }
 })
