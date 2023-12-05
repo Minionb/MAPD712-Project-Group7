@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -13,6 +13,8 @@ const EditPatientScreen = (props) => {
     const [open, setOpen] = useState(false);
     const [gender, setGender] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
+    const [show, setShow] = useState(Platform.OS === 'android' ? false : true);
+    const [plat, setPlat] = useState(Platform.OS)
     const today = new Date()
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
@@ -28,10 +30,30 @@ const EditPatientScreen = (props) => {
       ]);
 
     const onChange = (event,selectedDate) => {
+      if (Platform.OS === 'android') {
+        setShow(!show)
+      }
         const currentDate = selectedDate;
         setDateOfBirth(currentDate);
       };
 
+    const MyDatePicker = () => {
+      if (Platform.OS === 'android') {
+          return (
+          <TouchableOpacity style={{alignItems: 'center', paddingLeft: 60 }} onPress={() => setShow(true)}>
+            <TextInput style={styles.dateButton}
+              editable={false}
+              placeholder="YYYY-MM-DD"
+              value={dateOfBirth.toISOString().split('T')[0]}
+              textAlign='center'
+              />
+          </TouchableOpacity>
+          )
+      }
+      else {
+          return null
+      }
+    }
 
     const onSubmit = async () => {
       var updatedFields = []
@@ -129,7 +151,7 @@ const EditPatientScreen = (props) => {
               { cancelable: false }
             );
           }
-     }
+      }
       else{
           Alert.alert(
               'No Information Entered',
@@ -188,10 +210,11 @@ const EditPatientScreen = (props) => {
             dropDownStyle={{ backgroundColor: '#fafafa' }}
         />
         </View>
-        <View style={styles.allignComponents}>
+        <View style={[styles.allignComponents, plat == 'android' ? {paddingLeft: 145} : null]}>
         <Text style={styles.text}>Edit Date of Birth: </Text>
+        <MyDatePicker />
         <View style={styles.dateContainer}>
-            <DateTimePicker
+            {show && <DateTimePicker
             maximumDate= {today}
             testID="dateTimePicker"
             value={dateOfBirth}
@@ -199,7 +222,7 @@ const EditPatientScreen = (props) => {
             is24Hour={true}
             onChange={onChange}
             display="default"
-        />
+        />}
         </View>
         </View>
         <View style={styles.allignComponents}>
@@ -292,6 +315,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
       },
+      dateButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'black',
+        backgroundColor: 'white', 
+        // paddingLeft: 10,
+        // paddingRight: 10,
+        borderColor: 'black',
+        borderWidth: 2,
+        borderRadius: 8
+      }
 })
 
 export default EditPatientScreen;

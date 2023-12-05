@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Alert, TextInput, Button } from 'react-native';
+import { Text, StyleSheet, View, Alert, TextInput, Button, Platform, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -13,6 +13,8 @@ export default function NewClinicalRecord({route, navigation}) {
     const [finalValue, setFinalValue] = useState('');
     const [open, setOpen] = useState('');
     const [invalidEnrty , setInvalidEntry] = useState('')
+    const [show, setShow] = useState(Platform.OS === 'android' ? false : true);
+    const [plat, setPlat] = useState(Platform.OS)
     const today = new Date()
     const apiString = 'http://127.0.0.1:3000/patients'
     const apiRenderString = 'https://mapd713-project-group7.onrender.com/patients'
@@ -25,10 +27,31 @@ export default function NewClinicalRecord({route, navigation}) {
     ])
 
     const onChange = (event,selectedDate) => {
+        if (Platform.OS === 'android') {
+            setShow(!show)
+        }
         const currentDate = selectedDate;
         setRecordDateTime(currentDate);
         console.log(recordDateTime)
     };
+
+    const MyDatePicker = () => {
+        if (Platform.OS === 'android') {
+            return (
+            <TouchableOpacity style={{alignItems: 'center' }} onPress={() => setShow(true)}>
+            <TextInput style={styles.dateButton}
+                editable={false}
+                placeholder="YYYY-MM-DD"
+                value={recordDateTime.toLocaleDateString()}
+                textAlign='center'
+                />
+            </TouchableOpacity>
+            )
+        }
+        else {
+            return null
+        }
+    }
 
     const handleSave = () => {
         
@@ -87,11 +110,11 @@ export default function NewClinicalRecord({route, navigation}) {
                         Alert.alert(
                             'Successfully Created Clinical Record!',
                             infoCreatedStatement,
-                          [
+                        [
                             { text: 'OK', onPress: () => console.log('OK Pressed') }
-                          ],
-                          { cancelable: false }
-                          )
+                        ],
+                        { cancelable: false }
+                        )
                     }
                 },
                 {
@@ -156,8 +179,9 @@ export default function NewClinicalRecord({route, navigation}) {
                 }</Text>
             </View>
             <Text style={styles.header}>Select Date of Recorded Test</Text>
+            <MyDatePicker/>
             <View style={styles.dateContainer}>
-                <DateTimePicker
+                {show && <DateTimePicker
                     maximumDate= {today}
                     testID="dateTimePicker"
                     value={recordDateTime}
@@ -165,7 +189,7 @@ export default function NewClinicalRecord({route, navigation}) {
                     is24Hour={true}
                     onChange={onChange}
                     display="default"
-                />
+                />}
             </View>
             <View style={{ paddingTop: 50 }}>
                 <Button onPress={
@@ -224,5 +248,14 @@ const styles = StyleSheet.create({
     },
     redText: {
         color: 'red'
+    },
+    dateButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'black',
+        backgroundColor: 'white', 
+        borderColor: 'black',
+        borderWidth: 2,
+        borderRadius: 8
     }
 })
